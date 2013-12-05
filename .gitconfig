@@ -1,0 +1,31 @@
+[user]
+	name = ankujain
+	email = ankujain@amazon.com
+	groups = krew-dev
+[core]
+	editor = vim
+[merge]
+	tool = vimdiff
+	conflictstyle = diff3
+[format]
+	pretty = %C(yellow)%h %C(cyan)%ae%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%C(blue) %cd%x08%x08%x08%x08%x08%x08%C(reset)%C(magenta bold)%d%C(reset)%C(normal) %s
+[alias]
+	log-vgrep = "!pattern=$1 shift && git log --format='%H%x09%s' $@ | grep -v ""\"$pattern\""" | cut -f1 | git log --stdin --no-walk #"
+	lg = log -10
+	pr = !post-review --parent HEAD~1 --target-groups=krew-dev
+	lgd = log --pretty=full --date=iso
+	lgg = log --graph --date=iso
+	lgf = log
+	br = branch
+	brd = branch -D
+	brm = branch -M
+	brc = checkout -b
+	cm = commit
+	co = checkout
+	st = status -sb
+	up = add -u
+	unstage = reset --mixed
+[color]
+	ui = true
+[amazon]
+	append-cr-url = true
