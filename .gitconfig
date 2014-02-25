@@ -2,36 +2,71 @@
     name = ankujain
     email = ankujain@amazon.com
     groups = krew-dev
+
+[color]
+    ui = true
+
+# When using the post-review tool provided by Amazon Builder Tools team (in RBTools package),
+# this option automatically appends the CR url to the commit message
+[amazon]
+    append-cr-url = true
+
 [core]
     editor = vim
+
+# For resolving conflicts, I have found nothing better than the p4merge visual merge tool.
+# Install it for free from perforce website and set these options.
 [merge]
     tool = p4merge
-    conflictstyle = diff3
+    conflictstyle = diff3  # This option gives you the baseline code in the diff marks that
+                           # are added in your files during a conflict, in addition to the
+                           # usual "their" code and "mine" code. Makes conflict resolution
+                           # much easier.
 [mergetool]
     prompt = false
     keepTemporaries = false
 [mergetool "p4merge"]
     cmd = /Applications/p4merge.app/Contents/MacOS/p4merge $BASE $LOCAL $REMOTE $MERGED
     trustExitCode = true
+
+# Do a git log on your repo, and see how it looks. Want your log output
+# to look like this instead? 
+#
+# https://improvement-ninjas.amazon.com/s3files/s3get.cgi/git-log-pretty-aj.png
+#
+# Then set the below format.pretty option. The weird %x08 sequences are backspace
+# characters that remove part of the date.
 [format]
     pretty = %C(yellow)%h %C(cyan)%ae%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%C(blue) %cd%x08%x08%x08%x08%x08%x08%C(reset)%C(magenta bold)%d%C(reset)%C(normal) %s
+
+# And finally, some convenient, time-saving aliases I feel handicapped without.
 [alias]
-    log-vgrep = "!pattern=$1 shift && git log --format='%H%x09%s' $@ | grep -v ""\"$pattern\""" | cut -f1 | git log --stdin --no-walk #"
+    # This is my "git log". I don't want to fill my screen with the full log,
+    # so I limit it to the 10 most recent commits. I can simply do git lg -NNN
+    # if I want to see more, and of course the original "log" subcommand is 
+    # still available for use.
     lg = log -10
-    pr = !post-review --parent HEAD~1 --target-groups=krew-dev
+
+    pr = !post-review --parent HEAD~1 --target-groups=krf,kindle-reader-framework
+
+    # This alias allows me to see the version of "git log" output before it was
+    # changes by format.pretty above
     lgd = log --pretty=full --date=iso
+
+    # See the git log in graph form
     lgg = log --graph --date=iso
-    lgf = log
+
     br = branch
-    brd = branch -D
-    brm = branch -M
-    brc = checkout -b
+    brd = branch -D    # delete a branch
+    brm = branch -M    # rename a branch
+    brc = checkout -b  # create a new branch and switch to it immediately
+
     cm = commit
     co = checkout
     st = status -sb
     up = add -u
     unstage = reset --
-[color]
-    ui = true
-[amazon]
-    append-cr-url = true
+
+    # I wonder if you can figure this out...
+    log-vgrep = "!pattern=$1 shift && git log --format='%H%x09%s' $@ | grep -v ""\"$pattern\""" | cut -f1 | git log --stdin --no-walk #"
+
