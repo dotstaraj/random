@@ -5,8 +5,14 @@
 [core]
 	editor = vim
 [merge]
-	tool = vimdiff
+	tool = p4merge
 	conflictstyle = diff3
+[mergetool]
+    prompt = false
+    keepTemporaries = false
+[mergetool "p4merge"]
+    cmd = /Applications/p4merge.app/Contents/MacOS/p4merge $BASE $LOCAL $REMOTE $MERGED
+    trustExitCode = true
 [format]
 	pretty = %C(yellow)%h %C(cyan)%ae%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%C(blue) %cd%x08%x08%x08%x08%x08%x08%C(reset)%C(magenta bold)%d%C(reset)%C(normal) %s
 [alias]
@@ -24,7 +30,7 @@
 	co = checkout
 	st = status -sb
 	up = add -u
-	unstage = reset --mixed
+	unstage = reset --
 [color]
 	ui = true
 [amazon]
