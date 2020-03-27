@@ -26,9 +26,6 @@ async function expandMainCommentsThread (next, nextStep) {
    nextStep();
 }
 
-function expandMainCommentsPrev() {   expandMainCommentsThread(false, expandMainCommentsNext); }
-function expandMainCommentsNext() {   expandMainCommentsThread(true, expandReplies); }
-
 async function expandReplies() {
    let nodes = document.querySelectorAll("div[id^='comment_replies_more']");
    //Clicks on all those links to expand the replies
@@ -60,15 +57,42 @@ async function expandReplies() {
 }
 
 async function printNames() {
-   let result = document.evaluate("//div[@data-sigil='comment inline-reply']\
-                               //i[string-length(@aria-label) > 0]", document);
-   let n = result.iterateNext();
-   let nameList = "";
-   while (n) {
-      nameList += n.getAttribute('aria-label') + ", ";
-      n = result.iterateNext();
+   var numComments = document.querySelectorAll("div[data-sigil='comment']").length;
+   var firstReplies = document.querySelectorAll("div[data-sigil='comment inline-reply']:first-of-type");
+
+   dxe_engager_names = dxe_engager_names.split(",");
+   replyCounts = new Map();
+   for (var v of dxe_engager_names) replyCounts.set(v.trim(), [0, 0, false]);
+
+   for (var i = 0; i < firstReplies.length; ++i) {
+      var reply = firstReplies[i];
+      while (reply !== null) {
+         var replierName = reply.querySelector("a i").getAttribute("aria-label");
+         var replierCount = replyCounts.get(replierName);
+         if (replierCount) {
+            if (!replierCount[2]) {
+               ++replierCount[1];
+               replierCount[2] = true;
+            }
+            ++replierCount[0];
+         }
+         reply = reply.nextSibling;
+      }
+
+      for (var v of replyCounts.values()) v[2] = false;
    }
-   console.log(nameList);
+
+   var csvres = 
+      "Comments replied to by ANYONE: " + firstReplies.length + " of " + numComments + "\n" +
+      "Name, Total Replies, Unique Replies\n";
+   for (var e of replyCounts.entries()) {
+      csvres += e[0] + "," + e[1][0] + "," + e[1][1]  + "\n";
+   }
+
+   console.log(csvres);
 }
+
+function expandMainCommentsPrev() {   expandMainCommentsThread(false, expandMainCommentsNext); }
+function expandMainCommentsNext() {   expandMainCommentsThread(true, expandReplies); }
 
 var res = expandMainCommentsPrev();
