@@ -56,17 +56,21 @@ async function expandReplies() {
 }
 
 async function printNames() {
-   var numComments = document.querySelectorAll("div[data-sigil='comment']").length;
+   var mainComments = document.querySelectorAll("div[data-sigil='comment']");
+   var numMainCommentsReplied = 0;
    var firstReplies = document.querySelectorAll("div[data-sigil='comment inline-reply']:first-of-type");
 
-   dxe_engager_names = dxe_engager_names.split(",");
-   replyCounts = new Map();
-   for (var v of dxe_engager_names) replyCounts.set(v.trim(), [0, 0, false]);
+   var dxe_engager_names_list = dxe_engager_names.split(",");
+   var replyCounts = new Map();
+   for (var v of dxe_engager_names_list) replyCounts.set(v.trim(), [0, 0, false]);
 
-   for (var i = 0; i < firstReplies.length; ++i) {
-      var reply = firstReplies[i];
-      while (reply !== null && reply.getAttribute("data-sigil") === "comment inline-reply") {
-         var replierName = reply.querySelector("a i").getAttribute("aria-label");
+   for (var i = 0; i < mainComments.length; ++i) {
+      var replies = mainComments[i].querySelectorAll("div[data-sigil='comment inline-reply']");
+      if (replies.length === 0) continue;
+
+      ++numMainCommentsReplied;
+      for (var j = 0; j < replies.length; ++j) {
+         var replierName = replies[j].querySelector("a i").getAttribute("aria-label");
          var replierCount = replyCounts.get(replierName);
          if (replierCount) {
             if (!replierCount[2]) {
@@ -75,14 +79,13 @@ async function printNames() {
             }
             ++replierCount[0];
          }
-         reply = reply.nextSibling;
       }
 
       for (var v of replyCounts.values()) v[2] = false;
    }
 
    var csvres = 
-      "Comments replied to by ANYONE: " + firstReplies.length + " of " + numComments + "\n" +
+      "\nComments replied to by ANYONE: " + numMainCommentsReplied + " of " + mainComments.length + "\n" +
       "Name, Total Replies, Unique Replies\n";
    for (var e of replyCounts.entries()) {
       csvres += e[0] + "," + e[1][0] + "," + e[1][1]  + "\n";
