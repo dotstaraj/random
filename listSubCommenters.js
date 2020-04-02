@@ -1,6 +1,6 @@
 
 async function expandMainCommentsThread (next, nextStep) {
-   console.log("....\n\nExpanding main comments thread, please wait..." + next);
+   console.log("\nExpanding main comments thread, please wait...");
 
    let selector = "div[id^='see_" + (next ? "next" : "prev") + "']";
 
@@ -20,7 +20,6 @@ async function expandMainCommentsThread (next, nextStep) {
       }
       if (next) window.scrollTo(0,document.body.scrollHeight);
       if (lastCommentNode === (next ? node.previousSibling : node.nextSibling)) break;
-      //break;
    }
 
    nextStep();
@@ -66,7 +65,7 @@ async function printNames() {
 
    for (var i = 0; i < firstReplies.length; ++i) {
       var reply = firstReplies[i];
-      while (reply !== null) {
+      while (reply !== null && reply.getAttribute("data-sigil") === "comment inline-reply") {
          var replierName = reply.querySelector("a i").getAttribute("aria-label");
          var replierCount = replyCounts.get(replierName);
          if (replierCount) {
