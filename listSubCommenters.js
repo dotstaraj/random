@@ -14,7 +14,7 @@ async function expandMainCommentsThread (next, nextStep) {
       console.log(++i + "... Expanding main comments thread, please wait...");
       await new Promise(r => setTimeout(r, 1000));
       node = document.querySelector(selector);
-      while (node.firstChild.lastChild['style'].transform.length > 0) {
+      while (getComputedStyle(node.firstChild.lastChild).visibility !== "hidden") {
          await new Promise(r => setTimeout(r, 500));
          node = document.querySelector(selector);
       }
@@ -32,7 +32,7 @@ async function expandReplies() {
    let c = 0;
    let i = 0;
    while (i < nodes.length) {
-      nodes[i].firstChild.firstChild.click();
+      nodes[i].firstChild.firstElementChild.click();
       await new Promise(r => setTimeout(r, 300));
       console.log(++c + "... Expanding replies, please wait...");
       ++i;
