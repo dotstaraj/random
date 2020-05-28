@@ -58,7 +58,6 @@ async function expandReplies() {
 async function printNames() {
    var mainComments = document.querySelectorAll("div[data-sigil='comment']");
    var numMainCommentsReplied = 0;
-   var firstReplies = document.querySelectorAll("div[data-sigil='comment inline-reply']:first-of-type");
 
    var dxe_engager_names_list = dxe_engager_names.split(",");
    var replyCounts = new Map();
