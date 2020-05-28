@@ -69,7 +69,7 @@ async function printNames() {
 
       ++numMainCommentsReplied;
       for (var j = 0; j < replies.length; ++j) {
-         var replierName = replies[j].querySelector("a i").getAttribute("aria-label");
+         var replierName = replies[j].querySelectorAll("div a")[1].lastChild.wholeText;
          var replierCount = replyCounts.get(replierName);
          if (replierCount) {
             if (!replierCount[2]) {
